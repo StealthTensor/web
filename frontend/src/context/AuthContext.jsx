@@ -4,7 +4,7 @@ import {
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
-  signInWithPopup, 
+  signInWithRedirect, 
   signOut 
 } from "firebase/auth";
 
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
   }
 
   function loginWithGoogle() {
-    return signInWithPopup(auth, googleProvider);
+    return signInWithRedirect(auth, googleProvider);
   }
 
   function logout() {
