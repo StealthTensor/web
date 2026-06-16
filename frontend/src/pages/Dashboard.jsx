@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { LogOut, Search, Grid, Box, DollarSign, PieChart, FileText, Settings, HelpCircle, Flag, Bell, MessageSquare } from 'lucide-react';
+import { LogOut, Search, Grid, Box, DollarSign, PieChart, FileText, Settings, HelpCircle, Flag, Bell, MessageSquare, Menu } from 'lucide-react';
+import './Dashboard.css';
 
 export default function Dashboard() {
   const { currentUser, logout } = useAuth();
@@ -11,6 +12,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -48,9 +50,12 @@ export default function Dashboard() {
   );
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: '#f5f6fa', fontFamily: 'sans-serif', margin: 0, padding: 0 }}>
+    <div className="dashboard-container">
+      {/* Sidebar Overlay */}
+      <div className={`overlay ${sidebarOpen ? 'open' : ''}`} onClick={() => setSidebarOpen(false)}></div>
+      
       {/* Sidebar */}
-      <div style={{ width: '260px', backgroundColor: '#1c2434', color: 'white', display: 'flex', flexDirection: 'column' }}>
+      <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div style={{ padding: '2rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <span style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Dashboard</span>
         </div>
@@ -85,10 +90,15 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      <div className="main-content">
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem', backgroundColor: 'white', borderBottom: '1px solid #e5e7eb' }}>
-          <h1 style={{ margin: 0, fontSize: '1.25rem', color: '#111827', fontWeight: '700' }}>Welcome Back, {currentUser.email.split('@')[0]}! </h1>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <button className="menu-btn" onClick={() => setSidebarOpen(true)}>
+              <Menu size={24} color="#111827" />
+            </button>
+            <h1 className="header-title" style={{ margin: 0, fontSize: '1.25rem', color: '#111827', fontWeight: '700' }}>Welcome Back, {currentUser.email.split('@')[0]}! </h1>
+          </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ width: '32px', height: '32px', backgroundColor: '#e5e7eb', borderRadius: '50%', overflow: 'hidden' }}>
@@ -100,10 +110,10 @@ export default function Dashboard() {
         {error && <div style={{ margin: '2rem 2rem 0', backgroundColor: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '8px' }}>{error}</div>}
 
         {data && (
-          <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', boxSizing: 'border-box' }}>
+          <div className="dashboard-content" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%', boxSizing: 'border-box' }}>
             
             {/* KPI Cards */}
-            <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <div className="kpi-container">
               <div style={{ flex: 1, backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                 <div style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '600', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>ORDER QUANTITY <HelpCircle size={12}/></div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -130,7 +140,7 @@ export default function Dashboard() {
             </div>
 
             {/* Charts Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+            <div className="charts-container">
               <div style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                 <div style={{ fontSize: '0.875rem', color: '#374151', fontWeight: '700', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>SALES ANALYTICS <HelpCircle size={14} color="#9ca3af"/></div>
                 <div style={{ height: '300px' }}>
@@ -176,7 +186,8 @@ export default function Dashboard() {
                   Filter
                 </button>
               </div>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <div className="table-container">
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                 <thead>
                   <tr>
                     <th style={{ padding: '1rem', color: '#9ca3af', fontSize: '0.75rem', fontWeight: '600', borderBottom: '1px solid #f3f4f6' }}>NO</th>
@@ -209,6 +220,7 @@ export default function Dashboard() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
 
           </div>
