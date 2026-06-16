@@ -17,7 +17,7 @@ export default function Dashboard() {
       if (!currentUser) return;
       try {
         const token = await currentUser.getIdToken();
-        const response = await axios.get('http://localhost:8080/api/dashboard', {
+        const response = await axios.get('https://web-backend-g900.onrender.com/api/dashboard', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setData(response.data);
